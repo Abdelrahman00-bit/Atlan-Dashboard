@@ -1,5 +1,5 @@
 {
-  "name": "@coreui/coreui-free-react-admin-template",
+  "name": "atlan-admin-dashboard",
   "version": "5.5.0",
   "description": "CoreUI Free React Admin Template",
   "homepage": ".",
@@ -30,9 +30,11 @@
     "chart.js": "^4.5.1",
     "classnames": "^2.5.1",
     "core-js": "^3.47.0",
+    "leaflet": "^1.9.4",
     "prop-types": "^15.8.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-leaflet": "^5.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.11.0",
     "redux": "5.0.1",

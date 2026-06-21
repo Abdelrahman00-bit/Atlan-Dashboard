@@ -1,8 +1,20 @@
+// CoreUI imports - @use rules must be first
 @use "@coreui/coreui/scss/coreui" as * with ( 
   $enable-deprecation-messages: false,
 );
 @use "@coreui/chartjs/scss/coreui-chartjs";
 @use "vendors/simplebar";
+
+// Custom theme variables - defined after @use rules
+:root {
+  --cui-primary: #ec5c15;
+  --cui-primary-rgb: 236, 92, 21;
+  --cui-primary-contrast: #ffffff;
+  --cui-primary-contrast-rgb: 255, 255, 255;
+  --cui-primary-shade: #d15112;
+  --cui-primary-tint: #ee6c2b;
+}
+
 
 body {
   background-color: var(--cui-tertiary-bg);
@@ -17,7 +29,7 @@ body {
 
 .header > .container-fluid,
 .sidebar-header {
-  min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+  min-height: calc(4rem + 1px);
 }
 
 .sidebar-brand-full {
@@ -33,7 +45,7 @@ body {
   .nav-link {
     display: flex;
     align-items: center;
-    min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+    min-height: calc(4rem + 1px);
   }
 }
 
@@ -53,7 +65,159 @@ body {
 }
 
 .footer {
-  min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
+  min-height: calc(3rem + 1px);
+}
+
+// Custom overrides
+.btn-primary {
+  --cui-btn-bg: #ec5c15;
+  --cui-btn-border-color: #ec5c15;
+  --cui-btn-hover-bg: #d15112;
+  --cui-btn-hover-border-color: #d15112;
+  --cui-btn-active-bg: #b8470f;
+  --cui-btn-active-border-color: #b8470f;
+  --cui-btn-focus-shadow-rgb: 236, 92, 21;
+}
+
+// Active nav item highlight
+.nav-link.active,
+.nav-link.active .nav-link-icon {
+  color: #ec5c15 !important;
+}
+
+.nav-link:hover {
+  color: #ec5c15 !important;
+}
+
+// Card header accent
+.card-header {
+  border-bottom: 2px solid #ec5c15;
+}
+
+// Badge customization
+.badge.bg-primary {
+  background-color: #ec5c15 !important;
+}
+
+// Link colors
+a {
+  color: #ec5c15;
+}
+
+a:hover {
+  color: #d15112;
+}
+
+// Sidebar brand - old
+// .sidebar-brand {
+//   background-color: #ec5c15;
+// }
+
+// ATLAN Logo in sidebar
+.sidebar-brand {
+  text-decoration: none !important;
+
+  .atlan-logo {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-decoration: none !important;
+
+    .letter {
+      display: inline-block;
+      animation: typing-color 4s ease-in-out infinite;
+      color: #ec5c15;
+      text-decoration: none !important;
+    }
+  }
+}
+
+@keyframes typing-color {
+  0%, 15% {
+    color: #ec5c15;
+    opacity: 1;
+  }
+  20% {
+    color: #ec5c15;
+    opacity: 0.3;
+  }
+  25% {
+    color: #ec5c15;
+    opacity: 1;
+  }
+  40%, 55% {
+    color: #ffffff;
+    opacity: 1;
+  }
+  60% {
+    color: #ffffff;
+    opacity: 0.3;
+  }
+  65% {
+    color: #ffffff;
+    opacity: 1;
+  }
+  80%, 100% {
+    color: #ec5c15;
+    opacity: 1;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 991px) {
+  .atlan-logo {
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+  }
+}
+
+// Custom card hover effects
+.card {
+  transition: box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(236, 92, 21, 0.15);
+  }
+}
+
+// Progress bar primary color
+.progress-bar {
+  background-color: #ec5c15;
+}
+
+// Table header
+.table thead th {
+  background-color: #ec5c15;
+  color: white;
+}
+
+// Form focus states
+.form-control:focus,
+.form-select:focus {
+  border-color: #ec5c15;
+  box-shadow: 0 0 0 0.2rem rgba(236, 92, 21, 0.25);
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ec5c15;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d15112;
 }
 
 @include color-mode(dark) {
@@ -65,3 +229,4 @@ body {
     --cui-footer-bg: var(--cui-body-bg);
   }
 }
+

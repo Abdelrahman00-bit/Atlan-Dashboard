@@ -1,377 +1,398 @@
-import React from 'react'
-import classNames from 'classnames'
-
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
-  CAvatar,
-  CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCol,
-  CProgress,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
+  CCard, CCardBody, CCardHeader, CCol, CRow, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow,
+  CBadge, CButton, CAlert, CListGroup, CListGroupItem,
+  CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CFormSelect,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
-  cibCcAmex,
-  cibCcApplePay,
-  cibCcMastercard,
-  cibCcPaypal,
-  cibCcStripe,
-  cibCcVisa,
-  cibGoogle,
-  cibFacebook,
-  cibLinkedin,
-  cifBr,
-  cifEs,
-  cifFr,
-  cifIn,
-  cifPl,
-  cifUs,
-  cibTwitter,
-  cilCloudDownload,
-  cilPeople,
-  cilUser,
-  cilUserFemale,
+  cilPeople, cilUser, cilCheck, cilChart,
+  cilWarning, cilClock, cilStar, cilList, cilTask, cilTruck,
 } from '@coreui/icons'
+import {
+  allOrders as initialOrders, allProviders as initialProviders, allUsers, getStats, getScopedStats, getWarnings, getOrderAge, getAssignableProviders,
+} from '../../data/sharedData'
+import Pagination from '../../components/Pagination'
 
-import avatar1 from 'src/assets/images/avatars/1.jpg'
-import avatar2 from 'src/assets/images/avatars/2.jpg'
-import avatar3 from 'src/assets/images/avatars/3.jpg'
-import avatar4 from 'src/assets/images/avatars/4.jpg'
-import avatar5 from 'src/assets/images/avatars/5.jpg'
-import avatar6 from 'src/assets/images/avatars/6.jpg'
-
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import MainChart from './MainChart'
+const statusConfig = {
+  Pending:       { color: 'warning' },
+  Accepted:      { color: 'info' },
+  'In Progress': { color: 'primary' },
+  Completed:     { color: 'success' },
+  Cancelled:     { color: 'danger' },
+}
 
 const Dashboard = () => {
-  const progressExample = [
-    { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
-    { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
-    { title: 'Pageviews', value: '78.706 Views', percent: 60, color: 'warning' },
-    { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
-    { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
-  ]
+  const navigate = useNavigate()
+  const [orders, setOrders] = useState(initialOrders)
+  const [providers, setProviders] = useState(initialProviders)
+  const [scope, setScope] = useState('all')
+  const stats = getScopedStats(scope, orders, providers)
 
-  const progressGroupExample1 = [
-    { title: 'Monday', value1: 34, value2: 78 },
-    { title: 'Tuesday', value1: 56, value2: 94 },
-    { title: 'Wednesday', value1: 12, value2: 67 },
-    { title: 'Thursday', value1: 43, value2: 91 },
-    { title: 'Friday', value1: 22, value2: 73 },
-    { title: 'Saturday', value1: 53, value2: 82 },
-    { title: 'Sunday', value1: 9, value2: 69 },
-  ]
+  const buildWarnings = () => {
+    const warnings = []
+    const now = new Date('2026-06-13T13:44:00')
 
-  const progressGroupExample2 = [
-    { title: 'Male', icon: cilUser, value: 53 },
-    { title: 'Female', icon: cilUserFemale, value: 43 },
-  ]
+    orders.forEach((order) => {
+      if (order.status !== 'Pending') return
+      const created = new Date(order.createdAt)
+      const ageMin = (now - created) / 1000 / 60
+      if (ageMin > 30) {
+        warnings.push({
+          type: 'stale-pending',
+          severity: ageMin > 60 ? 'critical' : 'warning',
+          order,
+          message: `Order ${order.id} has been pending for ${Math.round(ageMin)} minutes`,
+        })
+      }
+    })
 
-  const progressGroupExample3 = [
-    { title: 'Organic Search', icon: cibGoogle, percent: 56, value: '191,235' },
-    { title: 'Facebook', icon: cibFacebook, percent: 15, value: '51,223' },
-    { title: 'Twitter', icon: cibTwitter, percent: 11, value: '37,564' },
-    { title: 'LinkedIn', icon: cibLinkedin, percent: 8, value: '27,319' },
-  ]
+    orders.forEach((order) => {
+      if (order.status !== 'In Progress') return
+      const created = new Date(order.createdAt)
+      const ageMin = (now - created) / 1000 / 60
+      if (ageMin > 60) {
+        warnings.push({
+          type: 'stuck-progress',
+          severity: ageMin > 120 ? 'critical' : 'warning',
+          order,
+          message: `Order ${order.id} has been in progress for ${Math.round(ageMin)} minutes`,
+        })
+      }
+    })
 
-  const tableExample = [
-    {
-      avatar: { src: avatar1, status: 'success' },
-      user: {
-        name: 'Yiorgos Avraamu',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'USA', flag: cifUs },
-      usage: {
-        value: 50,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'success',
-      },
-      payment: { name: 'Mastercard', icon: cibCcMastercard },
-      activity: '10 sec ago',
-    },
-    {
-      avatar: { src: avatar2, status: 'danger' },
-      user: {
-        name: 'Avram Tarasios',
-        new: false,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'Brazil', flag: cifBr },
-      usage: {
-        value: 22,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'info',
-      },
-      payment: { name: 'Visa', icon: cibCcVisa },
-      activity: '5 minutes ago',
-    },
-    {
-      avatar: { src: avatar3, status: 'warning' },
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-      country: { name: 'India', flag: cifIn },
-      usage: {
-        value: 74,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'warning',
-      },
-      payment: { name: 'Stripe', icon: cibCcStripe },
-      activity: '1 hour ago',
-    },
-    {
-      avatar: { src: avatar4, status: 'secondary' },
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-      country: { name: 'France', flag: cifFr },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'danger',
-      },
-      payment: { name: 'PayPal', icon: cibCcPaypal },
-      activity: 'Last month',
-    },
-    {
-      avatar: { src: avatar5, status: 'success' },
-      user: {
-        name: 'Agapetus Tadeáš',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'Spain', flag: cifEs },
-      usage: {
-        value: 22,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'primary',
-      },
-      payment: { name: 'Google Wallet', icon: cibCcApplePay },
-      activity: 'Last week',
-    },
-    {
-      avatar: { src: avatar6, status: 'danger' },
-      user: {
-        name: 'Friderik Dávid',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'Poland', flag: cifPl },
-      usage: {
-        value: 43,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'success',
-      },
-      payment: { name: 'Amex', icon: cibCcAmex },
-      activity: 'Last week',
-    },
-  ]
+    providers
+      .filter((p) => p.rating < 2.0)
+      .forEach((p) => {
+        warnings.push({
+          type: 'low-rating',
+          severity: 'critical',
+          provider: p,
+          message: `Provider ${p.name} has a critically low rating: ${p.rating}`,
+        })
+      })
+
+    const cancelled = orders.filter((o) => o.status === 'Cancelled').length
+    const cancellationRate = Math.round((cancelled / orders.length) * 100)
+    if (cancellationRate > 10) {
+      warnings.push({
+        type: 'cancellation-rate',
+        severity: cancellationRate > 20 ? 'critical' : 'warning',
+        message: `Cancellation rate is ${cancellationRate}% (threshold: 10%)`,
+      })
+    }
+
+    return warnings
+  }
+
+  const warnings = buildWarnings()
+
+  // Warnings Pagination state
+  const [warningsPage, setWarningsPage] = useState(1)
+  const [warningsPerPage, setWarningsPerPage] = useState(5)
+
+  const totalWarningsPages = Math.ceil(warnings.length / warningsPerPage)
+  const warningsStartIndex = (warningsPage - 1) * warningsPerPage
+  const paginatedWarnings = warnings.slice(warningsStartIndex, warningsStartIndex + warningsPerPage)
+
+  const [assignModal, setAssignModal] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [cancelTarget, setCancelTarget] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [viewOrderModal, setViewOrderModal] = useState(false)
+  const [viewOrder, setViewOrder] = useState(null)
+  const [viewProviderModal, setViewProviderModal] = useState(false)
+  const [viewProvider, setViewProvider] = useState(null)
+
+  const handleAssignFromWarning = (order) => {
+    setSelectedOrder(order)
+    setAssignModal(true)
+  }
+
+  const confirmAssign = (e) => {
+    const provider = e.target.value
+    if (!provider) return
+    setOrders((prev) =>
+      prev.map((o) => (o.id === selectedOrder.id ? { ...o, provider, status: 'Accepted' } : o)),
+    )
+    setAssignModal(false)
+    setSelectedOrder(null)
+  }
+
+  const handleCancelFromWarning = (order) => {
+    setCancelTarget(order)
+  }
+
+  const confirmCancel = () => {
+    setIsLoading(true)
+    setTimeout(() => {
+      setOrders((prev) =>
+        prev.map((o) => (o.id === cancelTarget.id ? { ...o, status: 'Cancelled' } : o)),
+      )
+      setIsLoading(false)
+      setCancelTarget(null)
+    }, 500)
+  }
+
+  const toggleProviderStatus = (providerId) => {
+    setProviders((prev) =>
+      prev.map((p) =>
+        p.id === providerId ? { ...p, status: p.status === 'Online' ? 'Offline' : 'Online' } : p,
+      ),
+    )
+  }
+
+  const recentOrders = [...orders]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 5)
+
+  const formatTime = (iso) => {
+    const d = new Date(iso)
+    return d.toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' })
+  }
 
   return (
     <>
-      <WidgetsDropdown className="mb-4" />
-      <CCard className="mb-4">
-        <CCardBody>
-          <CRow>
-            <CCol sm={5}>
-              <h4 id="traffic" className="card-title mb-0">
-                Traffic
-              </h4>
-              <div className="small text-body-secondary">January - July 2023</div>
-            </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton>
-              <CButtonGroup className="float-end me-3">
-                {['Day', 'Month', 'Year'].map((value) => (
-                  <CButton
-                    color="outline-secondary"
-                    key={value}
-                    className="mx-0"
-                    active={value === 'Month'}
-                  >
-                    {value}
-                  </CButton>
-                ))}
-              </CButtonGroup>
-            </CCol>
-          </CRow>
-          <MainChart />
-        </CCardBody>
-        <CCardFooter>
-          <CRow
-            xs={{ cols: 1, gutter: 4 }}
-            sm={{ cols: 2 }}
-            lg={{ cols: 4 }}
-            xl={{ cols: 5 }}
-            className="mb-2 text-center"
-          >
-            {progressExample.map((item, index, items) => (
-              <CCol
-                className={classNames({
-                  'd-none d-xl-block': index + 1 === items.length,
-                })}
-                key={index}
-              >
-                <div className="text-body-secondary">{item.title}</div>
-                <div className="fw-semibold text-truncate">
-                  {item.value} ({item.percent}%)
-                </div>
-                <CProgress thin className="mt-2" color={item.color} value={item.percent} />
-              </CCol>
-            ))}
-          </CRow>
-        </CCardFooter>
-      </CCard>
-      <WidgetsBrand className="mb-4" withCharts />
+      <div className="mb-4">
+        <h2>Roadside Assistance Dashboard</h2>
+        <p className="text-medium-emphasis">Welcome back — here's what's happening right now</p>
+      </div>
+
+      {/* ---- Overall Stats ---- */}
       <CRow>
-        <CCol xs>
+        <CCol xs={12} sm={6} lg={3}>
           <CCard className="mb-4">
-            <CCardHeader>Traffic {' & '} Sales</CCardHeader>
+            <CCardBody className="d-flex justify-content-between align-items-center">
+              <div>
+                <div className="text-medium-emphasis">Total Users</div>
+                <div className="fs-4 fw-semibold">{stats.totalUsers}</div>
+              </div>
+              <CIcon icon={cilUser} size="xxl" className="text-primary" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol xs={12} sm={6} lg={3}>
+          <CCard className="mb-4">
+            <CCardBody className="d-flex justify-content-between align-items-center">
+              <div>
+                <div className="text-medium-emphasis">Total Providers</div>
+                <div className="fs-4 fw-semibold">{stats.totalProviders}</div>
+              </div>
+              <CIcon icon={cilPeople} size="xxl" className="text-success" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol xs={12} sm={6} lg={3}>
+          <CCard className="mb-4">
+            <CCardBody className="d-flex justify-content-between align-items-center">
+              <div>
+                <div className="text-medium-emphasis">Total Orders</div>
+                <div className="fs-4 fw-semibold">{stats.totalOrders}</div>
+              </div>
+              <CIcon icon={cilList} size="xxl" className="text-info" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol xs={12} sm={6} lg={3}>
+          <CCard className="mb-4">
+            <CCardBody className="d-flex justify-content-between align-items-center">
+              <div>
+                <div className="text-medium-emphasis">Online Providers</div>
+                <div className="fs-4 fw-semibold">{stats.onlineProviders}</div>
+              </div>
+              <CIcon icon={cilCheck} size="xxl" className="text-success" />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      {/* ---- Today's Snapshot ---- */}
+      <CRow className="mb-4">
+        <CCol xs={12}>
+          <h5 className="mb-3">Today at a Glance</h5>
+        </CCol>
+        {(() => {
+          const todayStats = getScopedStats('today', orders, providers)
+          return (
+            <>
+              <CCol xs={12} sm={6} lg={3}>
+                <CCard className="mb-3">
+                  <CCardBody className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <div className="text-medium-emphasis">Today's Orders</div>
+                      <div className="fs-4 fw-semibold">{todayStats.totalOrders}</div>
+                    </div>
+                    <CIcon icon={cilClock} size="xl" className="text-primary" />
+                  </CCardBody>
+                </CCard>
+              </CCol>
+              <CCol xs={12} sm={6} lg={3}>
+                <CCard className="mb-3">
+                  <CCardBody className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <div className="text-medium-emphasis">Completed Today</div>
+                      <div className="fs-4 fw-semibold">{todayStats.completedOrders}</div>
+                    </div>
+                    <CIcon icon={cilCheck} size="xl" className="text-success" />
+                  </CCardBody>
+                </CCard>
+              </CCol>
+              <CCol xs={12} sm={6} lg={3}>
+                <CCard className="mb-3">
+                  <CCardBody className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <div className="text-medium-emphasis">Pending Today</div>
+                      <div className="fs-4 fw-semibold">{todayStats.pendingOrders}</div>
+                    </div>
+                    <CIcon icon={cilWarning} size="xl" className="text-warning" />
+                  </CCardBody>
+                </CCard>
+              </CCol>
+              <CCol xs={12} sm={6} lg={3}>
+                <CCard className="mb-3">
+                  <CCardBody className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <div className="text-medium-emphasis">Today's Revenue</div>
+                      <div className="fs-4 fw-semibold">{todayStats.revenue.toLocaleString()} EGP</div>
+                    </div>
+                    <CIcon icon={cilChart} size="xl" className="text-info" />
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </>
+          )
+        })()}
+      </CRow>
+
+      {/* ---- Warnings / Needs Attention ---- */}
+      <CRow className="mb-4">
+        <CCol xs={12}>
+          <CCard className="mb-4 border-start border-start-4 border-danger">
+            <CCardHeader className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-2">
+                <CIcon icon={cilWarning} className="text-danger" />
+                <strong>Needs Attention — {warnings.length} issue{warnings.length !== 1 ? 's' : ''}</strong>
+              </div>
+              {warnings.length > 0 && (
+                <CButton size="sm" color="danger" variant="outline" onClick={() => navigate('/orders')}>
+                  View All
+                </CButton>
+              )}
+            </CCardHeader>
+             <CCardBody>
+               {warnings.length === 0 ? (
+                 <p className="text-success mb-0">Good job! No issues requiring attention.</p>
+               ) : (
+                 <>
+                   <CListGroup flush>
+                     {paginatedWarnings.map((w, idx) => (
+                       <CListGroupItem key={idx} className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                         <div className="d-flex align-items-center gap-3">
+                           <CBadge color={w.severity === 'critical' ? 'danger' : 'warning'} className="text-uppercase">
+                             {w.severity}
+                           </CBadge>
+                           <span>{w.message}</span>
+                         </div>
+                         <div className="d-flex gap-2">
+                           {w.type === 'stale-pending' && w.order && (
+                             <>
+                               <CButton size="sm" color="info" variant="outline" onClick={() => { setViewOrder(w.order); setViewOrderModal(true); }}>
+                                 View
+                               </CButton>
+                               <CButton size="sm" color="primary" onClick={() => handleAssignFromWarning(w.order)}>
+                                 Assign
+                               </CButton>
+                               <CButton size="sm" color="danger" variant="outline" onClick={() => handleCancelFromWarning(w.order)}>
+                                 Cancel
+                               </CButton>
+                             </>
+                           )}
+                           {w.type === 'stuck-progress' && w.order && (
+                             <>
+                               <CButton size="sm" color="info" variant="outline" onClick={() => { setViewOrder(w.order); setViewOrderModal(true); }}>
+                                 View
+                               </CButton>
+                               <CButton size="sm" color="warning" variant="outline" onClick={() => handleCancelFromWarning(w.order)}>
+                                 Cancel Order
+                               </CButton>
+                             </>
+                           )}
+                           {w.type === 'low-rating' && w.provider && (
+                             <>
+                               <CButton size="sm" color="info" variant="outline" onClick={() => { setViewProvider(w.provider); setViewProviderModal(true); }}>
+                                 View
+                               </CButton>
+                               <CButton
+                                 size="sm"
+                                 color={w.provider.status === 'Online' ? 'secondary' : 'success'}
+                                 variant="outline"
+                                 onClick={() => toggleProviderStatus(w.provider.id)}
+                               >
+                                 {w.provider.status === 'Online' ? 'Take Offline' : 'Bring Online'}
+                               </CButton>
+                             </>
+                           )}
+                           {w.type === 'cancellation-rate' && (
+                             <CButton size="sm" color="info" variant="outline" onClick={() => navigate('/reports')}>
+                               View Report
+                             </CButton>
+                           )}
+                         </div>
+                       </CListGroupItem>
+                     ))}
+                   </CListGroup>
+                   <Pagination
+                     currentPage={warningsPage}
+                     totalPages={totalWarningsPages}
+                     itemsPerPage={warningsPerPage}
+                     setCurrentPage={setWarningsPage}
+                     setItemsPerPage={setWarningsPerPage}
+                     totalItems={warnings.length}
+                     label="warnings"
+                   />
+                 </>
+               )}
+             </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      {/* ---- Recent Orders ---- */}
+      <CRow>
+        <CCol xs={12} lg={8}>
+          <CCard className="mb-4">
+            <CCardHeader className="d-flex justify-content-between align-items-center">
+              <span>Recent Orders</span>
+              <Link to="/orders">
+                <CButton size="sm" color="primary">View All</CButton>
+              </Link>
+            </CCardHeader>
             <CCardBody>
-              <CRow>
-                <CCol xs={12} md={6} xl={6}>
-                  <CRow>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-info py-1 px-3">
-                        <div className="text-body-secondary text-truncate small">New Clients</div>
-                        <div className="fs-5 fw-semibold">9,123</div>
-                      </div>
-                    </CCol>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">
-                          Recurring Clients
-                        </div>
-                        <div className="fs-5 fw-semibold">22,643</div>
-                      </div>
-                    </CCol>
-                  </CRow>
-                  <hr className="mt-0" />
-                  {progressGroupExample1.map((item, index) => (
-                    <div className="progress-group mb-4" key={index}>
-                      <div className="progress-group-prepend">
-                        <span className="text-body-secondary small">{item.title}</span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="info" value={item.value1} />
-                        <CProgress thin color="danger" value={item.value2} />
-                      </div>
-                    </div>
-                  ))}
-                </CCol>
-                <CCol xs={12} md={6} xl={6}>
-                  <CRow>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">Pageviews</div>
-                        <div className="fs-5 fw-semibold">78,623</div>
-                      </div>
-                    </CCol>
-                    <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-success py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">Organic</div>
-                        <div className="fs-5 fw-semibold">49,123</div>
-                      </div>
-                    </CCol>
-                  </CRow>
-
-                  <hr className="mt-0" />
-
-                  {progressGroupExample2.map((item, index) => (
-                    <div className="progress-group mb-4" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">{item.value}%</span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="warning" value={item.value} />
-                      </div>
-                    </div>
-                  ))}
-
-                  <div className="mb-5"></div>
-
-                  {progressGroupExample3.map((item, index) => (
-                    <div className="progress-group" key={index}>
-                      <div className="progress-group-header">
-                        <CIcon className="me-2" icon={item.icon} size="lg" />
-                        <span>{item.title}</span>
-                        <span className="ms-auto fw-semibold">
-                          {item.value}{' '}
-                          <span className="text-body-secondary small">({item.percent}%)</span>
-                        </span>
-                      </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="success" value={item.percent} />
-                      </div>
-                    </div>
-                  ))}
-                </CCol>
-              </CRow>
-
-              <br />
-
-              <CTable align="middle" className="mb-0 border" hover responsive>
-                <CTableHead className="text-nowrap">
+              <CTable hover responsive>
+                <CTableHead>
                   <CTableRow>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
-                      <CIcon icon={cilPeople} />
-                    </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
-                      Country
-                    </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Usage</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
-                      Payment Method
-                    </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Activity</CTableHeaderCell>
+                    <CTableHeaderCell>Order ID</CTableHeaderCell>
+                    <CTableHeaderCell>User</CTableHeaderCell>
+                    <CTableHeaderCell>Service</CTableHeaderCell>
+                    <CTableHeaderCell>Provider</CTableHeaderCell>
+                    <CTableHeaderCell>Status</CTableHeaderCell>
+                    <CTableHeaderCell>Time</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {tableExample.map((item, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
-                      <CTableDataCell className="text-center">
-                        <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
-                      </CTableDataCell>
+                  {recentOrders.map((order) => (
+                    <CTableRow key={order.id}>
+                      <CTableDataCell className="fw-semibold">{order.id}</CTableDataCell>
+                      <CTableDataCell>{order.user}</CTableDataCell>
                       <CTableDataCell>
-                        <div>{item.user.name}</div>
-                        <div className="small text-body-secondary text-nowrap">
-                          <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
-                          {item.user.registered}
-                        </div>
+                        <CBadge color="light" textColor="dark" className="border">{order.service}</CBadge>
                       </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.country.flag} title={item.country.name} />
-                      </CTableDataCell>
+                      <CTableDataCell>{order.provider}</CTableDataCell>
                       <CTableDataCell>
-                        <div className="d-flex justify-content-between text-nowrap">
-                          <div className="fw-semibold">{item.usage.value}%</div>
-                          <div className="ms-3">
-                            <small className="text-body-secondary">{item.usage.period}</small>
-                          </div>
-                        </div>
-                        <CProgress thin color={item.usage.color} value={item.usage.value} />
+                        <CBadge color={statusConfig[order.status].color}>{order.status}</CBadge>
                       </CTableDataCell>
-                      <CTableDataCell className="text-center">
-                        <CIcon size="xl" icon={item.payment.icon} />
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <div className="small text-body-secondary text-nowrap">Last login</div>
-                        <div className="fw-semibold text-nowrap">{item.activity}</div>
-                      </CTableDataCell>
+                      <CTableDataCell>{formatTime(order.createdAt)}</CTableDataCell>
                     </CTableRow>
                   ))}
                 </CTableBody>
@@ -379,7 +400,210 @@ const Dashboard = () => {
             </CCardBody>
           </CCard>
         </CCol>
+
+        <CCol xs={12} lg={4}>
+          <CCard className="mb-4">
+            <CCardHeader className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-2">
+                <CIcon icon={cilTask} className="me-2" />
+                <strong>Quick Stats</strong>
+              </div>
+              <CFormSelect
+                size="sm"
+                value={scope}
+                onChange={(e) => setScope(e.target.value)}
+                style={{ width: '130px' }}
+              >
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="year">This Year</option>
+              </CFormSelect>
+            </CCardHeader>
+            <CCardBody>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">
+                  {scope === 'all' ? 'Total' : `${scope.charAt(0).toUpperCase() + scope.slice(1)}`} Revenue
+                </div>
+                <div className="fs-5 fw-semibold">{stats.revenue.toLocaleString()} EGP</div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Active Orders</div>
+                <div className="fs-5 fw-semibold">{stats.activeOrders}</div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Cancellation Rate</div>
+                <div className="fs-5 fw-semibold">
+                  {stats.cancellationRate}%
+                </div>
+              </div>
+              <div>
+                <div className="text-medium-emphasis">Avg Provider Rating</div>
+                <div className="fs-5 fw-semibold">
+                  {stats.avgRating} / 5.0
+                </div>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
       </CRow>
+
+      {/* ---- Assign Provider Modal ---- */}
+      <CModal visible={assignModal} onClose={() => setAssignModal(false)} alignment="center">
+        <CModalHeader>
+          <CModalTitle>Assign Provider</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          {selectedOrder && (
+            <>
+              <p className="text-medium-emphasis mb-3">
+                Order {selectedOrder.id} needs <strong>{selectedOrder.service}</strong>. Select a provider:
+              </p>
+              <CFormSelect onChange={confirmAssign} defaultValue="">
+                <option value="" disabled>Choose an available provider...</option>
+                {getAssignableProviders(selectedOrder.service, providers).map((p) => (
+                  <option key={p.id} value={p.name}>{p.name} ({p.phone})</option>
+                ))}
+                {getAssignableProviders(selectedOrder.service, providers).length === 0 && (
+                  <option disabled>No available providers for {selectedOrder.service}</option>
+                )}
+              </CFormSelect>
+            </>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setAssignModal(false)}>Cancel</CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* ---- Cancel Order Confirmation ---- */}
+      <CModal visible={!!cancelTarget} onClose={() => setCancelTarget(null)} alignment="center">
+        <CModalHeader>
+          <CModalTitle>Cancel Order</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          {cancelTarget && (
+            <>
+              <p>Are you sure you want to cancel order <strong>{cancelTarget.id}</strong>?</p>
+              <p className="text-medium-emphasis mb-0">User: {cancelTarget.user} | Service: {cancelTarget.service}</p>
+            </>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setCancelTarget(null)}>Keep Order</CButton>
+          <CButton color="danger" onClick={confirmCancel} disabled={isLoading}>
+            {isLoading ? 'Cancelling...' : 'Yes, Cancel'}
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* ---- Order Detail Modal ---- */}
+      <CModal visible={viewOrderModal} onClose={() => setViewOrderModal(false)} alignment="center" size="lg">
+        <CModalHeader>
+          <CModalTitle>Order Details</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          {viewOrder && (
+            <CRow>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Order ID</div>
+                <div className="fw-semibold">{viewOrder.id}</div>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Status</div>
+                <CBadge color={statusConfig[viewOrder.status]?.color}>{viewOrder.status}</CBadge>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">User</div>
+                <div className="fw-semibold">{viewOrder.user}</div>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Phone</div>
+                <div className="fw-semibold">{viewOrder.phone}</div>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Service</div>
+                <div className="fw-semibold">{viewOrder.service}</div>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Provider</div>
+                <div className="fw-semibold">{viewOrder.provider}</div>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Provider Phone</div>
+                <div className="fw-semibold">{providers.find((p) => p.name === viewOrder.provider)?.phone || 'N/A'}</div>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Location</div>
+                <div className="fw-semibold">{viewOrder.location}</div>
+              </CCol>
+              <CCol md={6} className="mb-3">
+                <div className="text-medium-emphasis">Created At</div>
+                <div className="fw-semibold">
+                  {new Date(viewOrder.createdAt).toLocaleString('en-GB', {
+                    day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+                  })}
+                </div>
+              </CCol>
+            </CRow>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setViewOrderModal(false)}>Close</CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* ---- Provider Detail Modal ---- */}
+      <CModal visible={viewProviderModal} onClose={() => setViewProviderModal(false)} alignment="center">
+        <CModalHeader>
+          <CModalTitle>Provider Details</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          {viewProvider && (
+            <>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Provider</div>
+                <div className="fw-semibold">{viewProvider.name}</div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Phone</div>
+                <div className="fw-semibold">{viewProvider.phone}</div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Services</div>
+                <div>
+                  {viewProvider.services.map((s) => (
+                    <CBadge color="light" textColor="dark" className="me-1 border" key={s}>{s}</CBadge>
+                  ))}
+                </div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Rating</div>
+                <div className="fw-semibold">
+                  <span className="text-warning">{'★'.repeat(Math.round(viewProvider.rating))}</span>{' '}
+                  {viewProvider.rating}
+                </div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Orders Completed</div>
+                <div className="fw-semibold">{viewProvider.ordersCompleted}</div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Location</div>
+                <div className="fw-semibold">{viewProvider.location}</div>
+              </div>
+              <div className="mb-3">
+                <div className="text-medium-emphasis">Status</div>
+                <CBadge color={viewProvider.status === 'Online' ? 'success' : 'secondary'}>{viewProvider.status}</CBadge>
+              </div>
+            </>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setViewProviderModal(false)}>Close</CButton>
+        </CModalFooter>
+      </CModal>
     </>
   )
 }
