@@ -16,6 +16,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { addChangelogEntry } from '../../../data/profileData'
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -28,6 +29,11 @@ const Login = () => {
     if (username === 'admin' && password === 'admin1234') {
       localStorage.setItem('isAuthenticated', 'true')
       setError('')
+      addChangelogEntry({
+        action: 'System Login',
+        targetType: 'General',
+        details: 'Admin logged into the dashboard.',
+      })
       navigate('/dashboard')
     } else {
       setError('Invalid username or password')

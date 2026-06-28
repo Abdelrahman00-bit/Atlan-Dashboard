@@ -1,0 +1,1074 @@
+{
+	"info": {
+		"_postman_id": "admin-routes-collection",
+		"name": "Admin Routes - Atlan",
+		"description": "Admin panel API routes for Atlan application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Show Login (GET)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/login",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/login",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "login"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/logout",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "logout"]
+						}
+					}
+				},
+				{
+					"name": "Broadcasting Auth",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/broadcasting/auth",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "broadcasting", "auth"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Dashboard (Pages)",
+			"item": [
+				{
+					"name": "Dashboard Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "dashboard"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Dashboard (API)",
+			"item": [
+				{
+					"name": "Get Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/stats",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "stats"]
+						}
+					}
+				},
+				{
+					"name": "Get Recent Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/recent-orders",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "recent-orders"]
+						}
+					}
+				},
+				{
+					"name": "Get Online Workers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/online-workers",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "online-workers"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users (Pages)",
+			"item": [
+				{
+					"name": "Users Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users"]
+						}
+					}
+				},
+				{
+					"name": "Users Create",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/create",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "create"]
+						}
+					}
+				},
+				{
+					"name": "Users Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Users Edit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/:id/edit",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", ":id", "edit"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users (API)",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/users",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"+1234567890\",\n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/users",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"phone\": \"+1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle User Active",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/users/:id/toggle-active",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "users", ":id", "toggle-active"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Workers (Pages)",
+			"item": [
+				{
+					"name": "Workers Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/workers",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "workers"]
+						}
+					}
+				},
+				{
+					"name": "Workers Create",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/workers/create",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "workers", "create"]
+						}
+					}
+				},
+				{
+					"name": "Workers Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/workers/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "workers", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Workers Edit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/workers/:id/edit",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "workers", ":id", "edit"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Workers (API)",
+			"item": [
+				{
+					"name": "List Workers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/workers",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "workers"]
+						}
+					}
+				},
+				{
+					"name": "Get Worker",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/workers/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "workers", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Worker",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Worker Name\",\n  \"email\": \"worker@example.com\",\n  \"phone\": \"+1234567890\",\n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/workers",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "workers"]
+						}
+					}
+				},
+				{
+					"name": "Update Worker",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Worker Name Updated\",\n  \"email\": \"worker.updated@example.com\",\n  \"phone\": \"+1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/workers/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "workers", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Worker",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/workers/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "workers", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Workers Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/workers-locations",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "workers-locations"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders (Pages)",
+			"item": [
+				{
+					"name": "Orders Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/orders",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders"]
+						}
+					}
+				},
+				{
+					"name": "Orders Create",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/orders/create",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders", "create"]
+						}
+					}
+				},
+				{
+					"name": "Orders Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/orders/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Orders Edit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/orders/:id/edit",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders", ":id", "edit"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders (API)",
+			"item": [
+				{
+					"name": "List Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/orders",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "orders"]
+						}
+					}
+				},
+				{
+					"name": "Get Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/orders/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "orders", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 1,\n  \"service_id\": 1,\n  \"status\": \"pending\",\n  \"total_price\": 100.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/orders",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "orders"]
+						}
+					}
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"completed\",\n  \"total_price\": 120.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/orders/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "orders", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/orders/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "orders", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Order Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/orders/:id/messages",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "orders", ":id", "messages"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/orders/:id/cancel",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "orders", ":id", "cancel"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Services (Pages)",
+			"item": [
+				{
+					"name": "Services Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/services",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "services"]
+						}
+					}
+				},
+				{
+					"name": "Services Create",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/services/create",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "services", "create"]
+						}
+					}
+				},
+				{
+					"name": "Services Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/services/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "services", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Services Edit",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/services/:id/edit",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "services", ":id", "edit"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Services (API)",
+			"item": [
+				{
+					"name": "List Services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/services",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "services"]
+						}
+					}
+				},
+				{
+					"name": "Get Service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/services/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "services", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Service Name\",\n  \"description\": \"Service description\",\n  \"price\": 50.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/services",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "services"]
+						}
+					}
+				},
+				{
+					"name": "Update Service",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Service Name Updated\",\n  \"description\": \"Updated description\",\n  \"price\": 60.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/services/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "services", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Service",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/services/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "services", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Service Options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/services/:categoryId/options",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "services", ":categoryId", "options"],
+							"variable": [
+								{
+									"key": "categoryId",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Service Option",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Option Name\",\n  \"price\": 10.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/services/:categoryId/options",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "services", ":categoryId", "options"],
+							"variable": [
+								{
+									"key": "categoryId",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Service Option",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Option Name Updated\",\n  \"price\": 15.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/api/options/:optionId",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "options", ":optionId"],
+							"variable": [
+								{
+									"key": "optionId",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Service Option",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/options/:optionId",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "options", ":optionId"],
+							"variable": [
+								{
+									"key": "optionId",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews (Pages)",
+			"item": [
+				{
+					"name": "Reviews Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "reviews"]
+						}
+					}
+				},
+				{
+					"name": "Reviews Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/reviews/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews (API)",
+			"item": [
+				{
+					"name": "List Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "reviews"]
+						}
+					}
+				},
+				{
+					"name": "Get Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/reviews/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/reviews/:id",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Live Tracking",
+			"item": [
+				{
+					"name": "Tracking Index (Page)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/tracking",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "tracking"]
+						}
+					}
+				},
+				{
+					"name": "Get Active Orders (API)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/api/active-orders",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "api", "active-orders"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

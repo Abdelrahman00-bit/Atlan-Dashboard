@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CCloseButton,
@@ -34,6 +34,7 @@ const AppSidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
     <CSidebar
@@ -45,10 +46,12 @@ const AppSidebar = () => {
       onVisibleChange={(visible) => {
         dispatch({ type: 'set', sidebarShow: visible })
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/">
-          <ATLANLogo />
+          {sidebarShow && (!unfoldable || isHovered) && <ATLANLogo />}
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"

@@ -24,6 +24,8 @@ const Services = React.lazy(() => import('./views/services/Services'))
 const Map = React.lazy(() => import('./views/map/LiveMap'))
 const Ratings = React.lazy(() => import('./views/ratings/Ratings'))
 const Settings = React.lazy(() => import('./views/settings/Settings'))
+const Profile = React.lazy(() => import('./views/profile/Profile'))
+const Changelog = React.lazy(() => import('./views/changelog/Changelog'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -39,6 +41,8 @@ const routes = [
   { path: '/map', name: 'Map Tracking', element: Map },
   { path: '/ratings', name: 'Ratings', element: Ratings },
   { path: '/settings', name: 'Settings', element: Settings },
+  { path: '/profile', name: 'Profile', element: Profile },
+  { path: '/changelog', name: 'Changelog', element: Changelog },
 ]
 
 export default routes

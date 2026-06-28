@@ -14,6 +14,7 @@ import {
   cilChart,
   cilSettings,
   cilUser,
+  cilHistory,
 } from '@coreui/icons'
 import { CNavItem, CNavTitle } from '@coreui/react'
 
@@ -81,6 +82,18 @@ const _nav = [
   {
     component: CNavTitle,
     name: 'System',
+  },
+  {
+    component: CNavItem,
+    name: 'Profile',
+    to: '/profile',
+    icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Changelog',
+    to: '/changelog',
+    icon: <CIcon icon={cilHistory} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

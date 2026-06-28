@@ -11,16 +11,18 @@ import {
   cilWarning, cilClock, cilStar, cilList, cilTask, cilTruck,
 } from '@coreui/icons'
 import {
-  allOrders as initialOrders, allProviders as initialProviders, allUsers, getStats, getScopedStats, getWarnings, getOrderAge, getAssignableProviders,
+  allOrders as initialOrders, allProviders as initialProviders, allUsers, getStats, getScopedStats, getWarnings, getOrderAge, getAssignableProviders, updateProvider,
 } from '../../data/sharedData'
+import { addChangelogEntry } from '../../data/profileData'
 import Pagination from '../../components/Pagination'
 
 const statusConfig = {
-  Pending:       { color: 'warning' },
-  Accepted:      { color: 'info' },
-  'In Progress': { color: 'primary' },
-  Completed:     { color: 'success' },
-  Cancelled:     { color: 'danger' },
+  Pending:   { color: 'warning' },
+  Accepted:  { color: 'info' },
+  'On Way':  { color: 'primary' },
+  'Arrived': { color: 'secondary' },
+  Completed: { color: 'success' },
+  Cancelled: { color: 'danger' },
 }
 
 const Dashboard = () => {
@@ -49,7 +51,7 @@ const Dashboard = () => {
     })
 
     orders.forEach((order) => {
-      if (order.status !== 'In Progress') return
+      if (order.status !== 'On Way') return
       const created = new Date(order.createdAt)
       const ageMin = (now - created) / 1000 / 60
       if (ageMin > 60) {
@@ -116,6 +118,13 @@ const Dashboard = () => {
     setOrders((prev) =>
       prev.map((o) => (o.id === selectedOrder.id ? { ...o, provider, status: 'Accepted' } : o)),
     )
+    addChangelogEntry({
+      action: 'Provider Assigned',
+      targetType: 'Order',
+      targetId: selectedOrder.id,
+      targetName: selectedOrder.id,
+      details: `Assigned provider "${provider}" to order ${selectedOrder.id}. Service: ${selectedOrder.service}`,
+    })
     setAssignModal(false)
     setSelectedOrder(null)
   }
@@ -130,12 +139,31 @@ const Dashboard = () => {
       setOrders((prev) =>
         prev.map((o) => (o.id === cancelTarget.id ? { ...o, status: 'Cancelled' } : o)),
       )
+      addChangelogEntry({
+        action: 'Order Cancelled',
+        targetType: 'Order',
+        targetId: cancelTarget.id,
+        targetName: cancelTarget.id,
+        details: `Cancelled order ${cancelTarget.id} for user "${cancelTarget.user}". Service: ${cancelTarget.service}`,
+      })
       setIsLoading(false)
       setCancelTarget(null)
     }, 500)
   }
 
   const toggleProviderStatus = (providerId) => {
+    const target = providers.find((p) => p.id === providerId)
+    if (target) {
+      const newStatus = target.status === 'Online' ? 'Offline' : 'Online'
+      updateProvider(providerId, { status: newStatus })
+      addChangelogEntry({
+        action: `Provider Set ${newStatus}`,
+        targetType: 'Provider',
+        targetId: target.id,
+        targetName: target.name,
+        details: `Changed provider "${target.name}" status to ${newStatus}.`,
+      })
+    }
     setProviders((prev) =>
       prev.map((p) =>
         p.id === providerId ? { ...p, status: p.status === 'Online' ? 'Offline' : 'Online' } : p,
