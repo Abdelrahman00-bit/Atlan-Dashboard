@@ -13,6 +13,7 @@ const Services = () => {
   const [services, setServices] = useState(SERVICES)
   const [showModal, setShowModal] = useState(false)
   const [editService, setEditService] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
   const [form, setForm] = useState({ name: '', description: '', basePrice: '', pricePerKm: '', status: 'Active' })
 
   const openAdd = () => {
@@ -55,16 +56,22 @@ const Services = () => {
   }
 
   const handleDelete = (name) => {
-    const idx = SERVICES.findIndex((s) => s.name === name)
+    setDeleteTarget(name)
+  }
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return
+    const idx = SERVICES.findIndex((s) => s.name === deleteTarget)
     if (idx !== -1) {
       SERVICES.splice(idx, 1)
       setServices([...SERVICES])
       addChangelogEntry({
         action: 'Service Deleted',
         targetType: 'General',
-        details: `Deleted service "${name}".`,
+        details: `Deleted service "${deleteTarget}".`,
       })
     }
+    setDeleteTarget(null)
   }
 
   const toggleStatus = (svc) => {
@@ -201,6 +208,21 @@ const Services = () => {
            <CButton color="primary" onClick={handleSave} disabled={!form.name || form.basePrice === '' || form.pricePerKm === ''}>
              {editService ? 'Save Changes' : 'Add Service'}
            </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* Delete Confirmation Modal */}
+      <CModal visible={!!deleteTarget} onClose={() => setDeleteTarget(null)} alignment="center">
+        <CModalHeader>
+          <CModalTitle>Delete Service</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <p>Are you sure you want to delete the service <strong>{deleteTarget}</strong>?</p>
+          <p className="text-medium-emphasis mb-0">This action cannot be undone and may affect existing orders.</p>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setDeleteTarget(null)}>Cancel</CButton>
+          <CButton color="danger" onClick={confirmDelete}>Delete Service</CButton>
         </CModalFooter>
       </CModal>
     </>
