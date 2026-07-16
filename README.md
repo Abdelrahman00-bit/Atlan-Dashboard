@@ -74,11 +74,11 @@ The platform connects three main actors:
 
 - **Primary Theme**: Blue (`#0d6efd`) and Dark Gray (`#212529`).
 - **Status Indicators**:
-  - Pending $\rightarrow$ Orange
-  - Accepted $\rightarrow$ Blue
-  - In Way $\rightarrow$ Purple
-  - arrived $\rightarrow$ Green
-  - Completed $\rightarrow$ Red
+  - Pending 
+  - Accepted 
+  - In Way 
+  - arrived 
+  - Completed 
 
 - **Professional Enhancements**: Loading skeletons, status badges.
 
