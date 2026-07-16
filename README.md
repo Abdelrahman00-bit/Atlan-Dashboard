@@ -28,7 +28,7 @@ A professional admin control center for managing an on-demand roadside assistanc
 # Clone the repository
 
 # Navigate to the project directory
-cd .\atlan-admin-dashboard\
+cd .\the file name that you cloned the project to it\
 
 # Install dependencies
 npm install
