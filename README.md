@@ -76,10 +76,11 @@ The platform connects three main actors:
 - **Status Indicators**:
   - Pending $\rightarrow$ Orange
   - Accepted $\rightarrow$ Blue
-  - In Progress $\rightarrow$ Purple
-  - Completed $\rightarrow$ Green
-  - Cancelled $\rightarrow$ Red
-- **Professional Enhancements**: Loading skeletons, status badges, and real-time notifications.
+  - In Way $\rightarrow$ Purple
+  - arrived $\rightarrow$ Green
+  - Completed $\rightarrow$ Red
+
+- **Professional Enhancements**: Loading skeletons, status badges.
 
 ### 4. Project Structure
 
